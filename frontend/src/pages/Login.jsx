@@ -51,7 +51,9 @@ const Login = () => {
 
     return (
         <main className="login-container">
-            <section className="login-brand-side">
+            <section className="login-brand-side" style={{
+                background: `url('/images/illust.jpg') center/cover no-repeat`
+            }}>
                 <div className="brand-overlay"></div>
                 <div className="brand-content">
                     <nav className="auth-nav">

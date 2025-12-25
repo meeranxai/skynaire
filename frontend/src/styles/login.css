@@ -50,7 +50,7 @@ body {
   display: flex;
   align-items: center;
   padding: 60px;
-  background: url('/images/illust.jpg') center/cover no-repeat;
+  /* background removed - handled via inline style */
   color: #ffffff;
 }
 
