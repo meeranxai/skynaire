@@ -3,6 +3,7 @@ import { auth } from '../firebase';
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import '../styles/login.css';
 
 const Login = () => {
     const [isSignUp, setIsSignUp] = useState(false);
