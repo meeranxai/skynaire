@@ -46,12 +46,14 @@
     }
 }
 
-body {
+/* Body styles moved to specific container to prevent global conflict */
+.whatsapp-root-container {
     font-family: 'Outfit', sans-serif;
     color: var(--text-primary);
     background: var(--bg-deep);
     height: 100vh;
     overflow: hidden;
+    width: 100%;
 }
 
 /* Custom Scrollbar */
@@ -1279,5 +1281,15 @@ body {
     background: white;
     border-radius: 2px;
     width: 0%;
-}@ m e d i a   s c r e e n   a n d   ( m a x - w i d t h :   9 0 0 p x )   {   . m o b i l e - b a c k - b t n   {   d i s p l a y :   b l o c k   ! i m p o r t a n t ;   }   }  
- 
+}
+
+@ m e d i a   s c r e e n   a n d   ( m a x - w i d t h :   9 0 0 p x )    {
+       . m o b i l e - b a c k - b t n    {
+           d i s p l a y :    b l o c k    ! i m p o r t a n t ;
+           
+    }
+
+       
+}
+
+     

@@ -6,7 +6,7 @@ const Chat = () => {
     const [activeChat, setActiveChat] = useState(null);
 
     return (
-        <div className="chat-app-container">
+        <div className="chat-root-container chat-app-container">
             <ChatSidebar
                 activeChatId={activeChat?.id}
                 onSelectChat={setActiveChat}
