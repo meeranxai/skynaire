@@ -1,28 +1,32 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
-// Create dist directory
-const distDir = path.join(__dirname, 'dist');
-if (!fs.existsSync(distDir)) {
-  fs.mkdirSync(distDir, { recursive: true });
-}
-
-// Copy frontend/public to dist
-const publicDir = path.join(__dirname, 'frontend', 'public');
-const files = fs.readdirSync(publicDir);
-
-files.forEach(file => {
-  const src = path.join(publicDir, file);
-  const dest = path.join(distDir, file);
+try {
+  console.log('🔨 Building React app...');
   
-  if (fs.statSync(src).isDirectory()) {
-    // Copy directory recursively
-    copyDir(src, dest);
-  } else {
-    // Copy file
-    fs.copyFileSync(src, dest);
+  // Build React app
+  execSync('cd frontend && npm install && npm run build', { stdio: 'inherit' });
+  
+  // Create dist directory if it doesn't exist
+  const distDir = path.join(__dirname, 'dist');
+  if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
   }
-});
+  
+  // Copy frontend/dist to dist
+  const frontendDist = path.join(__dirname, 'frontend', 'dist');
+  if (fs.existsSync(frontendDist)) {
+    copyDir(frontendDist, distDir);
+    console.log('✅ Build complete - React app built successfully');
+  } else {
+    console.error('❌ frontend/dist not found');
+    process.exit(1);
+  }
+} catch (error) {
+  console.error('❌ Build failed:', error.message);
+  process.exit(1);
+}
 
 function copyDir(src, dest) {
   if (!fs.existsSync(dest)) {
@@ -41,5 +45,3 @@ function copyDir(src, dest) {
     }
   });
 }
-
-console.log('✅ Build complete - files copied to dist');
