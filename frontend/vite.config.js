@@ -8,19 +8,22 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: undefined,
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                assetFileNames: (assetInfo) => {
+                    if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+                        return '[name].css';
+                    }
+                    return '[name].[ext]';
+                }
             }
         },
-        sourcemap: true,
+        sourcemap: false,
         minify: false,
-        target: 'es2015'
+        target: 'es2020',
+        assetsDir: 'assets'
     },
-    server: {
-        proxy: {
-            '/api': {
-                target: 'http://127.0.0.1:5000',
-                changeOrigin: true,
-                secure: false,
-            }
-        }
+    esbuild: {
+        target: 'es2020'
     }
 })
