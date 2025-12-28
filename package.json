@@ -4,7 +4,7 @@
   "description": "Skynaire - Social Media Platform",
   "private": true,
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "build": "node build.js",
     "dev": "cd frontend && npm run dev",
     "start": "cd frontend && npm run preview"
   },
