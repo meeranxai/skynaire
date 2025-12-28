@@ -1,0 +1,22 @@
+{
+  "name": "g-network-backend-simple",
+  "version": "1.0.0",
+  "description": "G-Network Backend - Simple Version (No Database, No AI)",
+  "main": "server-simple.js",
+  "scripts": {
+    "start": "node server-simple.js",
+    "dev": "nodemon server-simple.js",
+    "simple": "node server-simple.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
