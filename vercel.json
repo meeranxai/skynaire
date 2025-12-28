@@ -1,7 +1,10 @@
 {
-  "buildCommand": "echo 'Static deployment'",
-  "outputDirectory": "frontend/public",
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
   "public": true,
+  "env": {
+    "VITE_API_URL": "@vite_api_url"
+  },
   "headers": [
     {
       "source": "/(.*)",
@@ -11,39 +14,13 @@
           "value": "public, max-age=3600"
         }
       ]
-    },
-    {
-      "source": "/app.html",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/html; charset=utf-8"
-        }
-      ]
-    },
-    {
-      "source": "/*.js",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/javascript; charset=utf-8"
-        }
-      ]
-    },
-    {
-      "source": "/*.css",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/css; charset=utf-8"
-        }
-      ]
     }
   ],
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/app.html"
+      "destination": "/index.html"
     }
   ]
 }
+

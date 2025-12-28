@@ -1,0 +1,451 @@
+/* ========== USERS LIST IN MODAL ========== */
+.users-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-bottom: var(--space-2);
+}
+
+.user-item:hover {
+    background: var(--dark-hover);
+}
+
+.user-item img {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+}
+
+.user-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.user-details h4 {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--gray-100);
+    margin-bottom: 2px;
+}
+
+.user-details p {
+    font-size: 0.875rem;
+    color: var(--gray-400);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.select-user-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-lg);
+    background: var(--dark-card);
+    color: var(--gray-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.select-user-btn:hover {
+    background: var(--primary-600);
+    color: white;
+}
+
+/* ========== EMPTY STATES ========== */
+.empty-chats,
+.empty-contacts,
+.empty-users {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8) var(--space-4);
+    text-align: center;
+    color: var(--gray-500);
+}
+
+.empty-chats i,
+.empty-contacts i,
+.empty-users i {
+    font-size: 3rem;
+    margin-bottom: var(--space-4);
+    opacity: 0.5;
+}
+
+.empty-chats p,
+.empty-contacts p,
+.empty-users p {
+    margin-bottom: var(--space-4);
+}
+
+.text-btn {
+    background: transparent;
+    color: var(--primary-400);
+    font-weight: 500;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+}
+
+.text-btn:hover {
+    background: rgba(37, 99, 235, 0.1);
+}
+
+/* ========== MESSAGE STATUS INDICATORS ========== */
+.message-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.message-status i {
+    font-size: 0.875rem;
+}
+
+.message-status.sent {
+    color: var(--gray-500);
+}
+
+.message-status.delivered {
+    color: var(--primary-400);
+}
+
+.message-status.read {
+    color: var(--success-400);
+}
+
+/* ========== FILE ATTACHMENT PREVIEW ========== */
+.attachment-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background: var(--dark-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--dark-border);
+    margin-top: var(--space-2);
+    max-width: 300px;
+}
+
+.attachment-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.attachment-icon i {
+    color: white;
+    font-size: 1.25rem;
+}
+
+.attachment-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.attachment-info h5 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-100);
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.attachment-info p {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+}
+
+/* ========== TIME STAMPS ========== */
+.time-stamp {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    padding: var(--space-1) var(--space-2);
+    background: var(--dark-surface);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--dark-border);
+    display: inline-block;
+    margin: var(--space-2) 0;
+}
+
+/* ========== ONLINE STATUS INDICATORS ========== */
+.online-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    background: var(--success-400);
+    border: 2px solid var(--dark-surface);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.online-badge.away {
+    background: var(--warning-400);
+}
+
+.online-badge.busy {
+    background: var(--danger-400);
+}
+
+.online-badge.offline {
+    background: var(--gray-500);
+    animation: none;
+}
+
+/* ========== SCROLL TO BOTTOM BUTTON ========== */
+.scroll-to-bottom {
+    position: absolute;
+    bottom: 100px;
+    right: var(--space-5);
+    width: 44px;
+    height: 44px;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    z-index: var(--z-dropdown);
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+}
+
+.scroll-to-bottom.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.scroll-to-bottom:hover {
+    background: var(--dark-hover);
+    border-color: var(--primary-500);
+    transform: translateY(-2px);
+}
+
+/* ========== MESSAGE REACTIONS ========== */
+.message-reactions {
+    display: flex;
+    gap: var(--space-1);
+    margin-top: var(--space-2);
+}
+
+.reaction {
+    padding: 2px 6px;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    color: var(--gray-300);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.reaction:hover {
+    background: var(--dark-hover);
+    transform: scale(1.1);
+}
+
+.reaction.active {
+    background: rgba(37, 99, 235, 0.2);
+    border-color: var(--primary-500);
+    color: var(--primary-300);
+}
+
+/* ========== MESSAGE MENU ========== */
+.message-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-2);
+    min-width: 160px;
+    box-shadow: var(--shadow-2xl);
+    z-index: var(--z-popover);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-fast);
+}
+
+.message-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--gray-300);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.menu-item:hover {
+    background: var(--dark-hover);
+    color: var(--gray-100);
+}
+
+.menu-item.danger:hover {
+    background: var(--danger-600);
+    color: white;
+}
+
+.menu-item i {
+    width: 20px;
+    font-size: 1rem;
+}
+
+/* ========== SEARCH HIGHLIGHT ========== */
+.highlight {
+    background: rgba(250, 204, 21, 0.3);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* ========== TYPING CURSOR ========== */
+.typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--primary-400);
+    animation: blink 1s infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* ========== LOADING SKELETONS ========== */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--dark-card) 25%,
+        var(--dark-hover) 50%,
+        var(--dark-card) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: var(--radius-lg);
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+}
+
+.skeleton-text {
+    height: 12px;
+    border-radius: var(--radius-sm);
+}
+
+.skeleton-text.short {
+    width: 60px;
+}
+
+.skeleton-text.medium {
+    width: 120px;
+}
+
+.skeleton-text.long {
+    width: 180px;
+}
+
+/* ========== GRADIENT BORDERS ========== */
+.gradient-border {
+    position: relative;
+    border: double 2px transparent;
+    border-radius: var(--radius-xl);
+    background-image: 
+        linear-gradient(var(--dark-surface), var(--dark-surface)), 
+        linear-gradient(135deg, var(--primary-600), var(--secondary-600));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+/* ========== GLASS MORPHISM ========== */
+.glass {
+    background: rgba(19, 26, 45, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ========== PULSING ANIMATIONS ========== */
+.pulse {
+    animation: pulse-scale 2s infinite;
+}
+
+@keyframes pulse-scale {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ========== FLOATING ACTION BUTTON ========== */
+.fab {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-6);
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--primary-600), var(--secondary-600));
+    color: white;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-2xl);
+    transition: all var(--transition-base);
+    z-index: var(--z-fixed);
+}
+
+.fab:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: var(--shadow-2xl), 0 0 30px rgba(37, 99, 235, 0.4);
+}
+
+.fab i {
+    font-size: 1.5rem;
+}
