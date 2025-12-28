@@ -1,0 +1,15 @@
+{
+  "name": "g-network-api",
+  "version": "1.0.0",
+  "description": "Vercel Serverless API for G-Network",
+  "main": "api/health.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}

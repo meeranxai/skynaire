@@ -10,15 +10,15 @@ const isDevelopment = import.meta.env.MODE === 'development';
  * 
  * In production:
  * Returns the full URL from environment variable VITE_API_URL
- * (e.g. https://g-network-backend.railway.app)
+ * (e.g. https://skynaire.vercel.app/api for Vercel serverless functions)
  */
 export const API_BASE_URL = isDevelopment
     ? 'http://localhost:5000'
-    : (import.meta.env.VITE_API_URL || 'http://localhost:5000');
+    : (import.meta.env.VITE_API_URL || 'https://skynaire.vercel.app/api');
 
 export const SOCKET_URL = isDevelopment
     ? 'http://localhost:5000'
-    : (import.meta.env.VITE_API_URL || 'http://localhost:5000');
+    : (import.meta.env.VITE_API_URL || 'https://skynaire.vercel.app/api');
 
 export const getMediaUrl = (path) => {
     if (!path) return '/images/default-avatar.png'; // Fallback
@@ -26,7 +26,7 @@ export const getMediaUrl = (path) => {
 
     const baseUrl = isDevelopment
         ? 'http://localhost:5000'
-        : (import.meta.env.VITE_API_URL || 'http://localhost:5000');
+        : (import.meta.env.VITE_API_URL || 'https://skynaire.vercel.app/api');
 
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
     return `${baseUrl}${cleanPath}`;
