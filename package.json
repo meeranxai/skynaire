@@ -4,10 +4,10 @@
   "description": "G-Network - Social Media Platform",
   "private": true,
   "scripts": {
-    "build": "cd frontend && npm ci && npm run build && cd .. && xcopy /E /I /Y frontend\\dist dist",
+    "build": "cd frontend && npm ci && npm run build",
     "dev": "cd frontend && npm run dev",
     "start": "cd frontend && npm run preview",
-    "vercel-build": "cd frontend && npm ci && npm run build && cd .. && xcopy /E /I /Y frontend\\dist dist"
+    "vercel-build": "cd frontend && npm ci && npm run build && cd .. && rm -rf dist && mkdir -p dist && cp -r frontend/dist/* dist/"
   },
   "keywords": ["social", "media", "platform"],
   "author": "",
