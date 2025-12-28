@@ -8,14 +8,10 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: undefined,
-                entryFileNames: '[name].js',
-                chunkFileNames: '[name].js',
-                assetFileNames: '[name].[ext]'
             }
         },
-        assetsDir: '',
-        sourcemap: false,
-        minify: 'esbuild',
+        sourcemap: true,
+        minify: false,
         target: 'es2015'
     },
     server: {
@@ -24,16 +20,6 @@ export default defineConfig({
                 target: 'http://127.0.0.1:5000',
                 changeOrigin: true,
                 secure: false,
-            },
-            '/uploads': {
-                target: 'http://127.0.0.1:5000',
-                changeOrigin: true,
-                secure: false,
-            },
-            '/socket.io': {
-                target: 'http://127.0.0.1:5000',
-                ws: true,
-                changeOrigin: true
             }
         }
     }

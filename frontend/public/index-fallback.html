@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G-Network - Working!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .success {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 G-Network</h1>
+        <h2>Deployment Successful!</h2>
+        
+        <div class="success">
+            <h3>✅ Static Files Working</h3>
+            <p>HTML, CSS, and JavaScript are loading properly</p>
+            <p>Netlify deployment is successful</p>
+        </div>
+        
+        <button onclick="testJS()">Test JavaScript</button>
+        <button onclick="window.location.href='/'">Back to React App</button>
+        
+        <div id="test-result" style="margin-top: 20px;"></div>
+    </div>
+    
+    <script>
+        function testJS() {
+            document.getElementById('test-result').innerHTML = 
+                '<div style="background: rgba(76,175,80,0.2); padding: 15px; border-radius: 8px; margin-top: 10px;">' +
+                '<strong>✅ JavaScript Working!</strong><br>' +
+                'Time: ' + new Date().toLocaleString() +
+                '</div>';
+        }
+        
+        console.log('Fallback HTML loaded successfully');
+        console.log('Current URL:', window.location.href);
+    </script>
+</body>
+</html>
