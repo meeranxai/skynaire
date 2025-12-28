@@ -4,31 +4,58 @@
 
 /* The social.css is already loaded in profile.html, we just need to extend specific profile components */
 
+/* PROFILE PAGE RECONSTRUCTION */
 .profile-container {
-  max-width: var(--feed-max-width);
+  max-width: 935px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0;
+  background: transparent;
 }
 
-/* PROFILE HEADER RECONSTRUCTION */
-.profile-header {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 24px;
-  padding: 40px;
-  display: flex;
-  align-items: flex-start;
-  gap: 50px;
-  /* Slightly reduced gap */
-  margin-bottom: 60px;
-  /* Increased margin to protect Tabs */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+.profile-cover-section {
   position: relative;
-  overflow: visible;
-  /* Ensure nothing is clipped */
-  min-height: 220px;
+  height: 250px;
+  width: 100%;
+  background: var(--bg-secondary);
+  border-radius: 0 0 24px 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.profile-cover-section:hover .cover-image {
+  transform: scale(1.05);
+}
+
+.cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3));
+}
+
+.profile-header {
+  margin-top: -80px;
+  /* Overlap with cover */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  padding: 30px 40px;
+  display: flex;
+  align-items: flex-end;
+  gap: 30px;
+  margin-bottom: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 10;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .header-avatar-col {
@@ -71,14 +98,27 @@
 }
 
 .profile-username {
-  font-size: clamp(1.4rem, 4vw, 1.8rem);
-  /* Slightly smaller max size */
+  font-size: 1.8rem;
   font-weight: 800;
   margin: 0;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.verification-badge {
+  color: #0095f6;
+  font-size: 1.2rem;
+}
+
+.profile-pronouns {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  background: var(--bg-secondary);
+  padding: 2px 10px;
+  border-radius: 10px;
 }
 
 .profile-actions {
@@ -100,15 +140,16 @@
 }
 
 .btn-follow-toggle {
-  background: var(--surface-100);
-  border: 1px solid var(--border-color);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border: none;
   border-radius: 12px;
-  color: var(--text-primary);
+  color: white;
   font-weight: 700;
   padding: 10px 20px;
   font-size: 0.9rem;
-  transition: all 0.2s;
+  transition: all 0.3s;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
 }
 
 .btn-settings {
@@ -131,13 +172,39 @@
 }
 
 .btn-follow-toggle:hover {
-  background: var(--surface-200);
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
 }
 
 .btn-follow-toggle.following {
-  background: var(--surface-200);
+  background: var(--surface-100);
+  border: 1px solid var(--border-color);
   color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.btn-follow-toggle.following:hover {
+  background: #fee;
+  border-color: #fcc;
+  color: #e74c3c;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+}
+
+.btn-follow-toggle.following:hover::after {
+  content: "Unfollow";
+  position: absolute;
+}
+
+.btn-follow-toggle.following:hover::before {
+  content: "";
+  position: absolute;
+  opacity: 0;
+}
+
+.btn-follow-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* STATS */
@@ -192,9 +259,24 @@
   text-decoration: none;
   font-weight: 700;
   font-size: 0.95rem;
-  display: block;
-  /* Ensure it's on its own line if needed */
-  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.profile-meta-info {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* TABS - NO OVERLAP */
@@ -626,3 +708,40 @@ input:checked+.slider:before {
     border-color: rgba(255, 71, 87, 0.3);
   }
 }
+/* Phase 6: Profile Extras */
+.profile-meta-extra {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tech-stack-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.tech-tag {
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.member-since {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+

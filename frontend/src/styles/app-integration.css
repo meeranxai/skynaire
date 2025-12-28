@@ -1,0 +1,623 @@
+/* =============================================================================
+   DESIGN SYSTEM INTEGRATION & GLOBAL OVERRIDES
+   Applies design system to the entire G-Network application
+   Ensures all text is visible and properly styled
+   ============================================================================= */
+
+/* =============================================================================
+   GLOBAL TEXT VISIBILITY & COLOR INHERITANCE
+   ============================================================================= */
+
+/* Force proper text colors everywhere */
+body,
+body * {
+    color: inherit;
+}
+
+body {
+    color: var(--text-primary) !important;
+    background-color: var(--background-primary) !important;
+}
+
+/* Ensure all headings use design system colors */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-primary) !important;
+}
+
+/* Ensure paragraphs and text are visible */
+p,
+span,
+div,
+a,
+li,
+label {
+    color: inherit;
+}
+
+/* Override old social app background */
+body.social-app {
+    background-color: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* =============================================================================
+   SIDEBAR OVERRIDES - Make text visible
+   ============================================================================= */
+
+.sidebar-left,
+.sidebar-right {
+    background-color: transparent;
+    color: var(--text-primary);
+}
+
+.social-brand h1 {
+    color: var(--primary-600) !important;
+}
+
+.nav-item {
+    color: var(--text-secondary) !important;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    color: var(--primary-600) !important;
+    background-color: var(--primary-50) !important;
+}
+
+.dark-mode .nav-item:hover,
+.dark-mode .nav-item.active {
+    background-color: var(--primary-900) !important;
+}
+
+/* =============================================================================
+   FEED CONTAINER - Ensure visibility
+   ============================================================================= */
+
+.feed-container {
+    background-color: transparent;
+    color: var(--text-primary);
+}
+
+.feed-header {
+    background: var(--background-elevated) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-default);
+}
+
+/* =============================================================================
+   OLD COMPOSER - Override with design system
+   ============================================================================= */
+
+.create-composer,
+.glass-blur {
+    background: var(--background-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.composer-top,
+.input-wrapper {
+    color: var(--text-primary);
+}
+
+#composer-text,
+.form-textarea {
+    color: var(--text-primary) !important;
+}
+
+#composer-text::placeholder,
+.form-textarea::placeholder {
+    color: var(--text-tertiary) !important;
+}
+
+/* =============================================================================
+   OLD SOCIAL CARDS - Convert to design system
+   ============================================================================= */
+
+.social-card {
+    background: var(--background-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: var(--shadow-sm) !important;
+    color: var(--text-primary) !important;
+}
+
+.social-card:hover {
+    box-shadow: var(--shadow-md) !important;
+}
+
+.user-meta,
+.user-details h4 {
+    color: var(--text-primary) !important;
+}
+
+.timestamp {
+    color: var(--text-tertiary) !important;
+}
+
+.card-content,
+.card-content p {
+    color: var(--text-primary) !important;
+}
+
+.card-stats {
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--border-light) !important;
+}
+
+/* =============================================================================
+   BUTTONS - Design system overrides
+   ============================================================================= */
+
+.action-btn {
+    color: var(--text-secondary) !important;
+}
+
+.action-btn:hover {
+    background: var(--background-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+.action-btn.liked {
+    color: var(--error) !important;
+}
+
+.btn-more {
+    color: var(--text-tertiary) !important;
+}
+
+.btn-more:hover {
+    background: var(--background-tertiary) !important;
+    color: var(--text-primary) !important;
+}
+
+.btn-post-main {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+    color: white !important;
+}
+
+.btn-post-minimal {
+    background: var(--primary-600) !important;
+    color: white !important;
+}
+
+/* =============================================================================
+   TRENDING/RIGHT SIDEBAR - Visibility fixes
+   ============================================================================= */
+
+.trending-box {
+    background: var(--background-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.trending-box h3 {
+    color: var(--text-primary) !important;
+}
+
+.trend-item h5 {
+    color: var(--text-primary) !important;
+}
+
+.trend-meta {
+    color: var(--text-secondary) !important;
+}
+
+.trend-item:hover {
+    background: var(--background-tertiary) !important;
+}
+
+/* =============================================================================
+   AVATARS - Consistent styling
+   ============================================================================= */
+
+.user-avatar-sm,
+.profile-avatar,
+.profile-avatar-lg {
+    border-radius: var(--radius-full);
+    border: 2px solid var(--border-default);
+}
+
+/* =============================================================================
+   MODALS - Design system integration
+   ============================================================================= */
+
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(8px);
+}
+
+.create-post-modal,
+.edit-profile-modal {
+    background: var(--background-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: var(--shadow-2xl) !important;
+}
+
+.modal-header h3 {
+    color: var(--text-primary) !important;
+}
+
+/* =============================================================================
+   FORMS - Consistent styling
+   ============================================================================= */
+
+input,
+textarea,
+select {
+    background: var(--background-elevated) !important;
+    border: 2px solid var(--border-default) !important;
+    color: var(--text-primary) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary-500) !important;
+    box-shadow: 0 0 0 4px var(--primary-100) !important;
+}
+
+.dark-mode input:focus,
+.dark-mode textarea:focus,
+.dark-mode select:focus {
+    box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.2) !important;
+}
+
+/* =============================================================================
+   TOAST/NOTIFICATIONS - Visibility
+   ============================================================================= */
+
+.toast-notification {
+    background: var(--background-elevated) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.toast-success {
+    background: var(--success-light) !important;
+    color: var(--success-dark) !important;
+}
+
+.toast-error {
+    background: var(--error-light) !important;
+    color: var(--error-dark) !important;
+}
+
+/* =============================================================================
+   MOBILE NAV - Design system colors
+   ============================================================================= */
+
+.bottom-nav {
+    background: var(--background-elevated) !important;
+    border-top: 1px solid var(--border-default) !important;
+}
+
+.bottom-nav-item {
+    color: var(--text-tertiary) !important;
+}
+
+.bottom-nav-item.active,
+.bottom-nav-item.highlight {
+    color: var(--primary-600) !important;
+}
+
+.bottom-nav-item.highlight {
+    background: var(--primary-600) !important;
+    color: white !important;
+}
+
+/* =============================================================================
+   PROFILE PAGE - Text visibility
+   ============================================================================= */
+
+.profile-container {
+    color: var(--text-primary);
+}
+
+.profile-header {
+    background: var(--background-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+}
+
+.profile-username {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.profile-bio {
+    color: var(--text-secondary) !important;
+}
+
+.bio-name {
+    color: var(--text-primary) !important;
+}
+
+.stat-item {
+    color: var(--text-secondary) !important;
+}
+
+.stat-item strong {
+    color: var(--text-primary) !important;
+}
+
+/* =============================================================================
+   CHAT INTERFACE - Visibility
+   ============================================================================= */
+
+.chat-container,
+.chat-sidebar,
+.chat-main {
+    background: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.chat-item {
+    color: var(--text-primary) !important;
+}
+
+.chat-item:hover {
+    background: var(--background-tertiary) !important;
+}
+
+.chat-message {
+    color: var(--text-primary) !important;
+}
+
+.message-bubble {
+    background: var(--background-elevated) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-default);
+}
+
+.message-bubble.sent {
+    background: var(--primary-600) !important;
+    color: white !important;
+}
+
+/* =============================================================================
+   LINKS - Proper colors
+   ============================================================================= */
+
+a {
+    color: var(--primary-600);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--primary-700);
+}
+
+.bio-link {
+    color: var(--primary-600) !important;
+}
+
+/* =============================================================================
+   BORDERS - Consistent throughout
+   ============================================================================= */
+
+.border,
+.card-border,
+*[class*="border"] {
+    border-color: var(--border-default) !important;
+}
+
+/* =============================================================================
+   DROPDOWN MENUS - Visibility
+   ============================================================================= */
+
+.dropdown-menu,
+.post-options-menu {
+    background: var(--background-elevated) !important;
+    border: 1px solid var(--border-default) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.post-option-item {
+    color: var(--text-primary) !important;
+}
+
+.post-option-item:hover {
+    background: var(--background-tertiary) !important;
+}
+
+.post-option-item.delete {
+    color: var(--error) !important;
+}
+
+/* =============================================================================
+   GLASS MORPHISM OVERRIDES
+   ============================================================================= */
+
+.glass-blur {
+    background: var(--surface-glass) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark-mode .glass-blur {
+    background: rgba(30, 41, 59, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* =============================================================================
+   ICONS - Proper colors
+   ============================================================================= */
+
+.fas,
+.far,
+.fab,
+i {
+    color: inherit;
+}
+
+/* =============================================================================
+   SCROLLBARS - Design system
+   ============================================================================= */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-medium) var(--background-secondary);
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--background-secondary);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--border-medium);
+    border-radius: var(--radius-full);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: var(--border-dark);
+}
+
+/* =============================================================================
+   ENSURE CONTRAST RATIOS (WCAG AA)
+   ============================================================================= */
+
+/* Light mode - ensure dark text on light backgrounds */
+:root {
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+}
+
+/* Dark mode - ensure light text on dark backgrounds */
+/* Dark mode - ensure light text on dark backgrounds */
+.dark-mode {
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-tertiary: #94a3b8;
+    }
+}
+
+/* =============================================================================
+   UTILITY OVERRIDES
+   ============================================================================= */
+
+/* Ensure all utility classes respect design system */
+.text-primary {
+    color: var(--text-primary) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-tertiary {
+    color: var(--text-tertiary) !important;
+}
+
+.bg-primary {
+    background-color: var(--background-primary) !important;
+}
+
+.bg-elevated {
+    background-color: var(--background-elevated) !important;
+}
+
+/* =============================================================================
+   FINAL CATCH-ALL - Ensure nothing is invisible
+   ============================================================================= */
+
+/* Legacy Button Overrides (Design System Mappings) */
+.btn-follow-toggle {
+    background: var(--primary-600) !important;
+    color: white !important;
+    border-radius: var(--radius-full) !important;
+    padding: 0.5rem 1.25rem !important;
+    font-weight: 600 !important;
+    border: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    transition: all 0.2s !important;
+}
+
+.btn-follow-toggle:hover {
+    background: var(--primary-700) !important;
+    transform: translateY(-1px);
+}
+
+.btn-follow-toggle.following {
+    background: var(--surface-200) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-default) !important;
+}
+
+.btn-follow-toggle.following:hover {
+    background: var(--error-light) !important;
+    color: var(--error) !important;
+    border-color: var(--error) !important;
+}
+
+/* Ensure Select Options are Visible in Dark Mode */
+select option {
+    background-color: var(--background-elevated);
+    color: var(--text-primary);
+}
+
+/* Prevent white text on white background or black on black */
+.dark-mode * {
+    color: inherit;
+}
+
+/* =============================================================================
+   LOADING STATES - Visibility
+   ============================================================================= */
+
+.loading,
+.skeleton {
+    background: linear-gradient(90deg,
+            var(--background-secondary) 25%,
+            var(--background-tertiary) 50%,
+            var(--background-secondary) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* =============================================================================
+   PRINT STYLES - Ensure readability
+   ============================================================================= */
+
+@media print {
+    * {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* =============================================================================
+   END OF INTEGRATION
+   ============================================================================= */

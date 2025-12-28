@@ -13,12 +13,13 @@
     /* Hidden in this layout usually */
 
     /* Modern Social Palette */
-    --social-bg: #f8fafc;
+    --social-bg: #fafafa;
     /* Lighter, cleaner background */
     --card-bg: #ffffff;
     --border-color: #f1f5f9;
     /* Subtle borders */
-    --primary-soft: rgba(37, 99, 235, 0.08);
+    --primary-soft: rgba(99, 102, 241, 0.08);
+    /* Indigo soft accent */
 }
 
 body.social-app {
@@ -32,6 +33,17 @@ body.social-app {
     /* Prevent horizontal scroll */
 }
 
+/* Settings View Override: Allow full width */
+body.social-app.settings-view {
+    justify-content: flex-start;
+    padding: 0;
+    /* Remove side padding */
+}
+
+body.social-app.settings-view #root {
+    width: 100%;
+}
+
 /* ==========================================================================
    APP SHELL LAYOUT
    ========================================================================== */
@@ -39,11 +51,42 @@ body.social-app {
     display: flex;
     width: 100%;
     max-width: 1280px;
-    gap: 30px;
-    /* Reduced gap slightly */
-    padding-top: 30px;
-    justify-content: center;
-    /* Center content if sidebars hide */
+    margin: 0 auto;
+    /* Center the whole layout shell */
+    gap: 40px;
+    /* Increased gap for better breathing room */
+    padding: 30px 20px 0;
+    position: relative;
+    align-items: flex-start;
+    /* Ensure items align to top and don't stretch weirdly */
+}
+
+/* Full Page Chat Layout (No sidebars) */
+.app-layout.full-page-chat {
+    max-width: 100%;
+    padding: 0;
+    gap: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app-layout.full-page-chat .main-content-wrapper {
+    height: 100vh;
+    width: 100%;
+}
+
+/* Full Page Settings Layout */
+.app-layout.full-page-settings {
+    max-width: none;
+    /* Full width */
+    width: 100%;
+    padding: 0;
+    gap: 0;
+}
+
+.app-layout.full-page-settings .main-content-wrapper {
+    width: 100%;
+    margin: 0 auto;
 }
 
 /* LEFT SIDEBAR (Navigation) */
@@ -55,6 +98,7 @@ body.social-app {
     top: 30px;
     display: flex;
     flex-direction: column;
+    z-index: 100;
 }
 
 .social-brand {
@@ -132,12 +176,12 @@ body.social-app {
     box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.6);
 }
 
-/* CENTER FEED */
+/* Main Feed Container */
 .feed-container {
     width: 100%;
     max-width: var(--feed-max-width);
-    flex: 1 1 auto;
-    /* Allow shrinking/growing */
+    margin: 0 auto;
+    padding-bottom: 80px;
     min-width: 0;
     /* CSS Grid/Flexbox fix for nested overflow */
 }
@@ -1030,4 +1074,49 @@ body.social-app {
         box-shadow: 0 0 0 0 rgba(100, 100, 255, 0), var(--premium-shadow);
         transform: scale(1);
     }
+}
+
+/* ==========================================================================
+   STORIES FEATURE (Phase 6 Enhancement)
+   ========================================================================== */
+
+.story-bar-container::-webkit-scrollbar {
+    display: none;
+}
+
+.story-avatar-ring {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.story-item-wrapper:active .story-avatar-ring {
+    transform: scale(0.9);
+}
+
+.story-viewer-overlay {
+    animation: storyIn 0.3s ease-out;
+}
+
+@keyframes storyIn {
+    from {
+        opacity: 0;
+        transform: scale(1.1);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.story-viewer-content {
+    background: #000;
+}
+
+/* For mobile horizontal scrolling touch feel */
+.story-bar-container {
+    -webkit-overflow-scrolling: touch;
+}
+
+.story-item-wrapper {
+    flex-shrink: 0;
 }

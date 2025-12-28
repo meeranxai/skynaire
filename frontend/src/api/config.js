@@ -13,7 +13,7 @@ const isDevelopment = import.meta.env.MODE === 'development';
  * (e.g. https://g-network-backend.railway.app)
  */
 export const API_BASE_URL = isDevelopment
-    ? ''
+    ? 'http://localhost:5000'
     : (import.meta.env.VITE_API_URL || 'http://localhost:5000');
 
 export const SOCKET_URL = isDevelopment

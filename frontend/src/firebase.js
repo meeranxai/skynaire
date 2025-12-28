@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -14,9 +14,16 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-console.log("🔥 Firebase Initialized in React");
+console.log("🔥 Firebase Initialized");
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+// Ensure persistence is set to local
+setPersistence(auth, browserLocalPersistence)
+    .catch((error) => {
+        console.error("Auth persistence error:", error);
+    });
+
 export const storage = getStorage(app);
 export default app;

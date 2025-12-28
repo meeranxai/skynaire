@@ -11,28 +11,45 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { currentUser } = useAuth();
+    const { currentUser, loading: authLoading } = useAuth();
 
     useEffect(() => {
-        if (currentUser) {
-            navigate('/');
+        if (currentUser && !authLoading) {
+            console.log("User detected, navigating to home...");
+            navigate('/', { replace: true });
         }
-    }, [currentUser, navigate]);
+    }, [currentUser, authLoading, navigate]);
 
     const handleGoogleLogin = async () => {
-        const provider = new GoogleAuthProvider();
+        setError('');
+        setLoading(true);
+        console.log("🚀 Initiating Google Popup Login...");
+        
         try {
-            await signInWithPopup(auth, provider);
-            // Navigate handled by useEffect
+            const provider = new GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+            const result = await signInWithPopup(auth, provider);
+            console.log("✅ Google Popup Login Success:", result.user.email);
+            // onAuthStateChanged in AuthContext will handle the rest
         } catch (err) {
-            setError(err.message);
+            console.error("❌ Google Login Failed:", err.code, err.message);
+            if (err.code === 'auth/popup-blocked') {
+                setError('Popup blocked! Please allow popups for this site or try again.');
+            } else if (err.code === 'auth/popup-closed-by-user') {
+                setError('Login cancelled. Please try again.');
+            } else {
+                setError(`Login Error: ${err.message.replace('Firebase:', '').trim()}`);
+            }
+            setLoading(false);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
         try {
             if (isSignUp) {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -42,145 +59,141 @@ const Login = () => {
             } else {
                 await signInWithEmailAndPassword(auth, email, password);
             }
-            // Navigate handled by useEffect
         } catch (err) {
-            console.error(err);
+            console.error("Login/Signup error:", err);
             setError(err.message.replace('Firebase:', '').trim());
+            setLoading(false);
         }
     };
 
-    return (
-        <main className="login-container">
-            <section className="login-brand-side" style={{
-                background: `url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat`
-            }}>
-                <div className="brand-overlay"></div>
-                <div className="brand-content">
-                    <nav className="auth-nav">
-                        {/* We can't link to index.html directly in React router usually, but for "Back" maybe just reload or go home */}
-                        <a href="/" className="back-home">
-                            <i className="fas fa-arrow-left"></i>
-                            <span>Don't want to login? Back</span>
-                        </a>
-                    </nav>
-
-                    <header className="brand-header">
-                        <h1 className="logo-name">G-<span>Network</span></h1>
-                        <h2 className="hero-text">The Gateway to <br />Tech Excellence.</h2>
-                        <p className="brand-description">
-                            Join the elite community of developers. Login to access personalized roadmaps,
-                            premium tutorials, and expert-led tech insights.
-                        </p>
-                    </header>
-
-                    <div className="brand-stats">
-                        <div className="stat-item">
-                            <span className="stat-number">50k+</span>
-                            <p className="stat-label">Active Readers</p>
-                        </div>
-                        <div className="stat-item">
-                            <span className="stat-number">200+</span>
-                            <p className="stat-label">Premium Guides</p>
-                        </div>
-                        <div className="stat-item">
-                            <span className="stat-number">24/7</span>
-                            <p className="stat-label">Support</p>
-                        </div>
+    if (authLoading) {
+        return (
+            <div className="auth-page-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <div className="auth-card" style={{ textAlign: 'center', padding: '40px' }}>
+                    <div className="logo-container" style={{ marginBottom: '20px' }}>
+                        <span className="logo-text">G-NETWORK</span>
                     </div>
+                    <p>Verifying authentication status...</p>
+                    <div className="loading-spinner"></div>
+                    <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '20px' }}>
+                        Checking Firebase and Backend synchronization...
+                    </p>
                 </div>
-            </section>
+            </div>
+        );
+    }
 
-            <section className="login-form-side">
-                <div className="form-box">
-                    <header className="form-header">
-                        <h2>{isSignUp ? 'Join G-Network' : 'Welcome Back'}</h2>
-                        <p>{isSignUp ? 'Create your account' : 'Sign in to continue your journey'}</p>
-                    </header>
+    return (
+        <div className="auth-page-wrapper">
+            <div className="auth-background">
+                <div className="shape shape-1"></div>
+                <div className="shape shape-2"></div>
+                <div className="shape shape-3"></div>
+            </div>
 
-                    {error && <div className="auth-message error">{error}</div>}
+            <div className="auth-card">
+                <div className="auth-header">
+                    <div className="logo-container">
+                        <span className="logo-text">G-NETWORK</span>
+                    </div>
+                    <h2 className="auth-title">
+                        {isSignUp ? 'Create Account' : 'Welcome Back'}
+                    </h2>
+                    <p className="auth-subtitle">
+                        {isSignUp 
+                            ? 'Join the professional developer community' 
+                            : 'Enter your credentials to access your account'}
+                    </p>
+                </div>
 
-                    <form onSubmit={handleSubmit} autoComplete="on">
-                        {isSignUp && (
-                            <div className="input-group">
-                                <label><i className="fas fa-user"></i> Full Name</label>
-                                <div className="input-wrapper">
-                                    <input
-                                        type="text"
-                                        placeholder="e.g. John Doe"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        required
-                                    />
-                                    <i className="fas fa-user-circle"></i>
-                                </div>
-                            </div>
+                {error && <div className="auth-error-message">{error}</div>}
+
+                <form onSubmit={handleSubmit} className="auth-form">
+                    {isSignUp && (
+                        <div className="form-group">
+                            <label>Full Name</label>
+                            <input
+                                type="text"
+                                className="form-input"
+                                placeholder="John Doe"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
+                        </div>
+                    )}
+
+                    <div className="form-group">
+                        <label>Email Address</label>
+                        <input
+                            type="email"
+                            className="form-input"
+                            placeholder="name@company.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <div className="label-row">
+                            <label>Password</label>
+                            {!isSignUp && <a href="#" className="forgot-password">Forgot password?</a>}
+                        </div>
+                        <input
+                            type="password"
+                            className="form-input"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <button type="submit" className="submit-btn" disabled={loading}>
+                        {loading ? (
+                            <span className="spinner-small"></span>
+                        ) : (
+                            isSignUp ? 'Get Started' : 'Sign In'
                         )}
+                    </button>
 
-                        <div className="input-group">
-                            <label htmlFor="email"><i className="fas fa-envelope"></i> Email Address</label>
-                            <div className="input-wrapper">
-                                <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="e.g. user@example.com"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                                <i className="fas fa-at"></i>
-                            </div>
-                        </div>
+                    <div className="divider">
+                        <span>or continue with</span>
+                    </div>
 
-                        <div className="input-group">
-                            <div className="label-row">
-                                <label htmlFor="password"><i className="fas fa-lock"></i> Password</label>
-                                <a href="#" className="forgot-link">Forgot?</a>
-                            </div>
-                            <div className="input-wrapper">
-                                <input
-                                    type="password"
-                                    id="password"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                                <i className="fas fa-key"></i>
-                            </div>
-                        </div>
-
-                        <button type="submit" className="btn-main-login">
-                            <span>{isSignUp ? 'Create Account' : 'Sign In to Account'}</span>
-                            <i className="fas fa-arrow-right"></i>
+                    <div className="social-actions">
+                        <button 
+                            type="button" 
+                            onClick={handleGoogleLogin} 
+                            className="social-btn"
+                            disabled={loading}
+                        >
+                            <img src="/images/Google_Favicon_2025.svg.webp" alt="Google" />
+                            {loading ? 'Connecting...' : 'Google'}
                         </button>
+                        <button type="button" className="social-btn">
+                            <img src="/images/github.png" alt="GitHub" />
+                            GitHub
+                        </button>
+                    </div>
+                </form>
 
-                        <div className="auth-separator">
-                            <span>Or continue with</span>
-                        </div>
-
-                        <div className="social-grid">
-                            <button type="button" onClick={handleGoogleLogin} className="social-btn google-auth">
-                                <img src="/images/Google_Favicon_2025.svg.webp" alt="Google" />
-                                <span>Google</span>
-                            </button>
-                            <button type="button" className="social-btn github-auth">
-                                <img src="/images/github.png" alt="GitHub" />
-                                <span>GitHub</span>
-                            </button>
-                        </div>
-
-                        <footer className="form-footer">
-                            <p>
-                                {isSignUp ? 'Already have an account? ' : 'New to G-Network? '}
-                                <span onClick={() => setIsSignUp(!isSignUp)} className="switch-auth" style={{ cursor: 'pointer', color: 'var(--primary)', fontWeight: '600' }}>
-                                    {isSignUp ? 'Sign In' : 'Create your free account'}
-                                </span>
-                            </p>
-                        </footer>
-                    </form>
+                <div className="auth-footer">
+                    <p>
+                        {isSignUp ? 'Already have an account?' : "Don't have an account?"}
+                        <button 
+                            type="button" 
+                            onClick={() => setIsSignUp(!isSignUp)} 
+                            className="toggle-auth-btn"
+                        >
+                            {isSignUp ? 'Sign in' : 'Sign up'}
+                        </button>
+                    </p>
+                    <a href="/" className="back-link">Back to Home</a>
                 </div>
-            </section>
-        </main>
+            </div>
+        </div>
     );
 };
 

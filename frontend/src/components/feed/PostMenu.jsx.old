@@ -1,0 +1,12 @@
+import React from 'react';
+
+// Temporary placeholder to fix React Hook errors
+const PostMenu = (props) => {
+    return (
+        <div style={{ display: 'none' }}>
+            {/* PostMenu temporarily disabled due to hook errors */}
+        </div>
+    );
+};
+
+export default PostMenu;

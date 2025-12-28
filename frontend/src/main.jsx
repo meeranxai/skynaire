@@ -3,14 +3,15 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import { AuthProvider } from './contexts/AuthContext'
 
-// Global Styles
+// Global Styles - Design System First (Foundation)
+import './styles/design-system.css'
 import './styles/style.css'
 import './styles/social.css'
 import './styles/components.css'
 import './styles/profile.css'
-import './styles/chat.css'
 import './styles/whatsapp.css'
 import './styles/call.css'
+import './styles/app-integration.css' // Global overrides & integration
 
 
 // FontAwesome (You might want to install this via npm later, but for now CDN in index.html or import here if npm installed)
@@ -19,12 +20,18 @@ import './styles/call.css'
 // Better practice: Add CDN to Vite's index.html
 
 import { SocketProvider } from './contexts/SocketContext'
+import { NotificationProvider } from './contexts/NotificationContext'
+
+// PWA Support
+import './utils/pwa-install.js'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <AuthProvider>
             <SocketProvider>
-                <App />
+                <NotificationProvider>
+                    <App />
+                </NotificationProvider>
             </SocketProvider>
         </AuthProvider>
     </React.StrictMode>,
