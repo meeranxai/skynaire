@@ -63,12 +63,27 @@ const CSSDebug = () => {
         // Check for common CSS issues
         info.issues = [];
         
-        // Check if bundle.css is loaded
-        const bundleLoaded = styles.some(s => s.href.includes('bundle.css'));
-        if (!bundleLoaded) {
-            info.issues.push('❌ bundle.css not found - using individual CSS files');
+        // Check if individual CSS files are loaded
+        const individualFiles = [
+            'style.css', 'social.css', 'components.css', 'pages-enhancement.css',
+            'profile.css', 'login.css', 'messenger.css', 'settings-complete.css',
+            'settings-enhancements.css', 'PostCard.css', 'PostViewer.css', 
+            'PostMenu.css', 'Toast.css', 'call.css', 'whatsapp.css',
+            'app-integration.css', 'light-theme-force.css'
+        ];
+        
+        const loadedFiles = individualFiles.filter(file => 
+            styles.some(s => s.href.includes(file))
+        );
+        
+        if (loadedFiles.length === individualFiles.length) {
+            info.issues.push(`✅ All ${loadedFiles.length} CSS files loaded correctly`);
         } else {
-            info.issues.push('✅ bundle.css loaded correctly');
+            info.issues.push(`❌ Only ${loadedFiles.length}/${individualFiles.length} CSS files loaded`);
+            const missingFiles = individualFiles.filter(file => 
+                !styles.some(s => s.href.includes(file))
+            );
+            info.issues.push(`Missing: ${missingFiles.join(', ')}`);
         }
 
         // Check for duplicate stylesheets

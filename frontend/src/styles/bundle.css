@@ -1,58 +1,32 @@
 /* =================================================================
-   G-NETWORK OPTIMIZED CSS BUNDLE
-   Consolidated from 17 separate files to reduce HTTP requests
+   G-NETWORK PRODUCTION CSS BUNDLE - DIRECT IMPORTS
+   Fixed for Vercel deployment - No @import statements
    ================================================================= */
 
-/* Core base styles first */
-@import url('./style.css');
+/* Import all CSS files directly in main.jsx instead of using @import */
+/* This file serves as a reference for the import order */
 
-/* Social base features */
-@import url('./social.css');
+/*
+CORRECT IMPORT ORDER IN main.jsx:
 
-/* General components */
-@import url('./components.css');
-
-/* Page enhancements */
-@import url('./pages-enhancement.css');
-
-/* Profile page */
-@import url('./profile.css');
-
-/* Login page */
-@import url('./login.css');
-
-/* Messenger page */
-@import url('./messenger.css');
-
-/* Settings page */
-@import url('./settings-complete.css');
-
-/* Settings enhancements */
-@import url('./settings-enhancements.css');
-
-/* Post cards */
-@import url('./PostCard.css');
-
-/* Post viewer */
-@import url('./PostViewer.css');
-
-/* Post menus */
-@import url('./PostMenu.css');
-
-/* Toast notifications */
-@import url('./Toast.css');
-
-/* Video calling */
-@import url('./call.css');
-
-/* WhatsApp features */
-@import url('./whatsapp.css');
-
-/* App integration */
-@import url('./app-integration.css');
-
-/* Theme force (final override) */
-@import url('./light-theme-force.css');
+import './styles/style.css';                      // 1. Core base styles
+import './styles/social.css';                     // 2. Social features  
+import './styles/components.css';                 // 3. Component styles
+import './styles/pages-enhancement.css';          // 4. Page enhancements
+import './styles/profile.css';                    // 5. Profile page
+import './styles/login.css';                      // 6. Login page
+import './styles/messenger.css';                  // 7. Messenger
+import './styles/settings-complete.css';          // 8. Settings
+import './styles/settings-enhancements.css';      // 9. Settings enhanced
+import './styles/PostCard.css';                   // 10. Post cards
+import './styles/PostViewer.css';                 // 11. Post viewer
+import './styles/PostMenu.css';                   // 12. Post menus
+import './styles/Toast.css';                      // 13. Toast notifications
+import './styles/call.css';                       // 14. Video calling
+import './styles/whatsapp.css';                   // 15. WhatsApp features
+import './styles/app-integration.css';            // 16. App integration
+import './styles/light-theme-force.css';          // 17. Theme overrides (LAST)
+*/
 
 /* =================================================================
    PERFORMANCE OPTIMIZATIONS
