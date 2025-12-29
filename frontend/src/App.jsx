@@ -8,6 +8,7 @@ import { ToastProvider } from './contexts/ToastContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { SocketProvider } from './contexts/SocketContext';
 import PerformanceMonitor from './components/performance/PerformanceMonitor';
+import WebSocketDebug from './components/debug/WebSocketDebug';
 
 // Lazy load components to reduce initial bundle size
 const Home = lazy(() => import('./pages/Home'));
@@ -79,6 +80,7 @@ function App() {
                         <NavigationProvider>
                             <NotificationProvider>
                                 <PerformanceMonitor />
+                                <WebSocketDebug />
                                 <Suspense fallback={<LoadingSpinner />}>
                                     <Routes>
                                         <Route path="/login" element={<Login />} />

@@ -31,6 +31,7 @@ export const SocketProvider = ({ children }) => {
     const cleanupRef = useRef(null);
     const reconnectTimeoutRef = useRef(null);
     const heartbeatIntervalRef = useRef(null);
+    const connectionAttempts = useRef(0);
 
     // Cleanup function to prevent memory leaks
     const cleanup = useCallback(() => {
@@ -53,6 +54,7 @@ export const SocketProvider = ({ children }) => {
         setIsConnected(false);
         setConnectionStatus('disconnected');
         setOnlineUsers({});
+        connectionAttempts.current = 0;
     }, [socket]);
 
     useEffect(() => {
@@ -64,28 +66,38 @@ export const SocketProvider = ({ children }) => {
         console.log('🔌 Connecting socket for user:', currentUser.email);
         setConnectionStatus('connecting');
 
+        // Enhanced socket configuration for better connection stability
         const newSocket = io(SOCKET_URL, {
-            transports: ['websocket'],
-            reconnectionAttempts: 3, // Reduced from 5
-            reconnectionDelay: 2000, // Increased delay
-            timeout: 8000, // Reduced timeout
-            forceNew: true // Prevent connection reuse
+            transports: ['websocket', 'polling'], // Allow fallback to polling
+            upgrade: true, // Allow transport upgrades
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
+            reconnectionDelayMax: 5000,
+            maxReconnectionAttempts: 5,
+            timeout: 20000, // Increased timeout
+            forceNew: false, // Allow connection reuse for better performance
+            autoConnect: true,
+            // Additional options for better connection handling
+            rememberUpgrade: false,
+            rejectUnauthorized: false
         });
 
-        // Heartbeat to prevent connection hanging
-        const startHeartbeat = () => {
-            heartbeatIntervalRef.current = setInterval(() => {
-                if (newSocket.connected) {
-                    newSocket.emit('ping');
-                }
-            }, 30000); // Every 30 seconds
-        };
-
+        // Connection event handlers
         newSocket.on('connect', () => {
             console.log('✅ Socket Connected:', newSocket.id);
             setIsConnected(true);
             setConnectionStatus('connected');
-            startHeartbeat();
+            connectionAttempts.current = 0;
+            
+            // Start heartbeat after successful connection
+            if (heartbeatIntervalRef.current) {
+                clearInterval(heartbeatIntervalRef.current);
+            }
+            heartbeatIntervalRef.current = setInterval(() => {
+                if (newSocket.connected) {
+                    newSocket.emit('ping');
+                }
+            }, 30000);
             
             // Announce presence with full user data
             newSocket.emit('user_online', {
@@ -102,6 +114,18 @@ export const SocketProvider = ({ children }) => {
             newSocket.emit('join_personal_room', currentUser.uid);
         });
 
+        newSocket.on('connect_error', (error) => {
+            console.error('❌ Socket Connection Error:', error);
+            setConnectionStatus('error');
+            connectionAttempts.current++;
+            
+            // If too many failed attempts, try different approach
+            if (connectionAttempts.current > 3) {
+                console.log('🔄 Too many connection failures, trying polling transport');
+                newSocket.io.opts.transports = ['polling'];
+            }
+        });
+
         newSocket.on('disconnect', (reason) => {
             console.log('🔌 Socket Disconnected:', reason);
             setIsConnected(false);
@@ -111,13 +135,24 @@ export const SocketProvider = ({ children }) => {
             if (heartbeatIntervalRef.current) {
                 clearInterval(heartbeatIntervalRef.current);
             }
+
+            // Handle different disconnect reasons
+            if (reason === 'io server disconnect') {
+                // Server initiated disconnect, reconnect manually
+                console.log('🔄 Server disconnected, attempting manual reconnection');
+                setTimeout(() => {
+                    if (!newSocket.connected) {
+                        newSocket.connect();
+                    }
+                }, 2000);
+            }
         });
 
         newSocket.on('reconnect', (attemptNumber) => {
             console.log('🔄 Socket Reconnected after', attemptNumber, 'attempts');
             setIsConnected(true);
             setConnectionStatus('connected');
-            startHeartbeat();
+            connectionAttempts.current = 0;
         });
 
         newSocket.on('reconnect_attempt', (attemptNumber) => {
@@ -128,7 +163,13 @@ export const SocketProvider = ({ children }) => {
         newSocket.on('reconnect_failed', () => {
             console.log('❌ Socket Reconnection failed');
             setConnectionStatus('failed');
-            cleanup(); // Clean up on failure
+            
+            // Try one more time with polling transport
+            console.log('🔄 Attempting connection with polling transport');
+            newSocket.io.opts.transports = ['polling'];
+            setTimeout(() => {
+                newSocket.connect();
+            }, 5000);
         });
 
         // Handle user presence updates with memory optimization
@@ -172,24 +213,18 @@ export const SocketProvider = ({ children }) => {
             setOnlineUsers(usersMap);
         });
 
-        // Handle connection errors
-        newSocket.on('connect_error', (error) => {
-            console.error('❌ Socket Connection Error:', error);
-            setConnectionStatus('error');
-        });
-
         // Pong response for heartbeat
         newSocket.on('pong', () => {
-            // Connection is alive
+            // Connection is alive - no action needed
         });
 
         setSocket(newSocket);
 
-        // Cleanup timeout
+        // Cleanup timeout - increased to 10 minutes
         cleanupRef.current = setTimeout(() => {
             console.log('🧹 Socket cleanup timeout triggered');
             cleanup();
-        }, 300000); // 5 minutes max connection
+        }, 600000); // 10 minutes
 
         return cleanup;
     }, [currentUser, cleanup]);
@@ -197,7 +232,7 @@ export const SocketProvider = ({ children }) => {
     // Update user activity status via socket with throttling
     const lastActivityUpdate = useRef(0);
     useEffect(() => {
-        if (socket && currentUser && userActivity) {
+        if (socket && currentUser && userActivity && isConnected) {
             const now = Date.now();
             // Throttle activity updates to every 5 seconds
             if (now - lastActivityUpdate.current > 5000) {
@@ -209,7 +244,7 @@ export const SocketProvider = ({ children }) => {
                 lastActivityUpdate.current = now;
             }
         }
-    }, [socket, currentUser, userActivity?.isActive, userActivity?.lastActivity]);
+    }, [socket, currentUser, userActivity?.isActive, userActivity?.lastActivity, isConnected]);
 
     const sendMessage = useCallback((chatId, recipientId, text, mediaUrl = null, mediaType = 'text', replyTo = null) => {
         if (!socket || !currentUser || !isConnected) {
