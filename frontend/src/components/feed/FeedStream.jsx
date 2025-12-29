@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useGNavigation } from '../../contexts/NavigationContext';
 import PostCard from './PostCard';
 import SuggestedReels from './SuggestedReels';
+import ContentLoader from '../common/ContentLoader';
 
 const FeedStream = ({ feedType = 'home' }) => {
     const { currentUser } = useAuth();

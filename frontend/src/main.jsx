@@ -6,6 +6,7 @@ import './styles/design-system.css'
 import './styles/social.css'
 import './styles/components.css'
 import './styles/app-integration.css'
+import './styles/light-theme-force.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

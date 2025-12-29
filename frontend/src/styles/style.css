@@ -67,11 +67,11 @@
     --gray-800: #1f2937;
     --gray-900: #111827;
 
-    /* Dark Theme Variables */
-    --dark-surface: #1e293b;
-    --dark-card: #334155;
-    --dark-border: #475569;
-    --dark-hover: #475569;
+    /* Dark Theme Variables - OVERRIDE TO LIGHT */
+    --dark-surface: #ffffff;
+    --dark-card: #ffffff;
+    --dark-border: #e5e7eb;
+    --dark-hover: #f3f4f6;
 
     /* Semantic Colors */
     --success-400: #10b981;
@@ -140,6 +140,64 @@ p, span, div, a, li, label {
 body.social-app {
     background-color: var(--background-primary) !important;
     color: var(--text-primary) !important;
+}
+
+/* FORCE LIGHT THEME - Override any dark theme */
+* {
+    background-color: inherit;
+}
+
+/* Fix dark areas - Force light backgrounds */
+.dark-surface, .dark-card, .dark-border, .dark-hover,
+[class*="dark"], [class*="Dark"] {
+    background-color: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Fix common dark elements */
+.sidebar, .left-sidebar, .right-sidebar {
+    background-color: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.card, .post-card, .user-card {
+    background-color: var(--surface-0) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-light) !important;
+}
+
+.header, .navbar, .nav {
+    background-color: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-light) !important;
+}
+
+/* Fix buttons */
+.btn, button {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.btn-secondary, .btn-outline {
+    background-color: var(--surface-100) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-default) !important;
+}
+
+/* Fix inputs */
+input, textarea, select {
+    background-color: var(--surface-0) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-default) !important;
+}
+
+/* Fix modals */
+.modal, .popup, .dropdown {
+    background-color: var(--surface-0) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-light) !important;
+    box-shadow: var(--shadow-lg) !important;
 }
 
 /* =========================================

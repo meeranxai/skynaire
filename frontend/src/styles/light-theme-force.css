@@ -1,0 +1,156 @@
+/* FORCE LIGHT THEME - Override ALL dark elements */
+
+/* Global light theme enforcement */
+* {
+    box-sizing: border-box;
+}
+
+/* Force light backgrounds on ALL elements */
+body, html, #root {
+    background-color: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Override any dark classes */
+[class*="dark"], 
+[class*="Dark"],
+[class*="black"],
+[class*="Black"] {
+    background-color: var(--surface-0) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Common layout elements */
+.layout, .app-layout, .main-layout {
+    background-color: var(--background-primary) !important;
+}
+
+.sidebar, .left-sidebar, .right-sidebar {
+    background-color: var(--surface-0) !important;
+    border-right: 1px solid var(--border-light) !important;
+}
+
+.header, .navbar, .nav, .navigation {
+    background-color: var(--surface-0) !important;
+    border-bottom: 1px solid var(--border-light) !important;
+}
+
+/* Cards and containers */
+.card, .post-card, .user-card, .feed-card {
+    background-color: var(--surface-0) !important;
+    border: 1px solid var(--border-light) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Buttons */
+.btn, button {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.btn-secondary, .btn-outline, .btn-ghost {
+    background-color: var(--surface-100) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-default) !important;
+}
+
+/* Forms */
+input, textarea, select {
+    background-color: var(--surface-0) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-default) !important;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1) !important;
+}
+
+/* Modals and dropdowns */
+.modal, .popup, .dropdown, .menu {
+    background-color: var(--surface-0) !important;
+    border: 1px solid var(--border-light) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+/* Lists */
+.list, .list-item, ul, li {
+    background-color: inherit !important;
+    color: var(--text-primary) !important;
+}
+
+/* Text elements */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+}
+
+p, span, div, a {
+    color: inherit !important;
+}
+
+a {
+    color: var(--primary) !important;
+}
+
+a:hover {
+    color: var(--primary-dark) !important;
+}
+
+/* Loading states */
+.loading, .spinner {
+    background-color: var(--surface-0) !important;
+}
+
+/* Empty states */
+.empty, .no-content {
+    background-color: var(--surface-0) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* Fix any remaining dark elements */
+div[style*="background: #"], 
+div[style*="background-color: #"],
+div[style*="background:#"],
+div[style*="background-color:#"] {
+    background-color: var(--surface-0) !important;
+}
+
+/* Social media specific */
+.feed, .feed-stream, .post, .story {
+    background-color: var(--surface-0) !important;
+}
+
+.profile, .user-profile {
+    background-color: var(--background-primary) !important;
+}
+
+/* Messages/Chat */
+.chat, .message, .conversation {
+    background-color: var(--surface-0) !important;
+}
+
+/* Settings */
+.settings, .preferences {
+    background-color: var(--background-primary) !important;
+}
+
+/* Notifications */
+.notification, .alert {
+    background-color: var(--surface-0) !important;
+    border: 1px solid var(--border-light) !important;
+}
+
+/* Override inline styles that might be dark */
+[style*="background: rgb(0"], 
+[style*="background: rgba(0"],
+[style*="background-color: rgb(0"],
+[style*="background-color: rgba(0"] {
+    background-color: var(--surface-0) !important;
+}
+
+/* Fix any black text on dark backgrounds */
+[style*="color: rgb(0"] {
+    color: var(--text-primary) !important;
+}
