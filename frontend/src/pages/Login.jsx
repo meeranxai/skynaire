@@ -3,7 +3,7 @@ import { auth } from '../firebase';
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-// CSS imported via bundle.css in main.jsx ✅
+// CSS imported via individual imports in main.jsx ✅
 
 const Login = () => {
     const [isSignUp, setIsSignUp] = useState(false);
@@ -68,14 +68,15 @@ const Login = () => {
 
     if (authLoading) {
         return (
-            <div className="auth-page-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <div className="auth-card" style={{ textAlign: 'center', padding: '40px' }}>
-                    <div className="logo-container" style={{ marginBottom: '20px' }}>
+            <div className="auth-page-wrapper">
+                <div className="auth-card" style={{ textAlign: 'center' }}>
+                    <div className="logo-container">
                         <span className="logo-text">G-NETWORK</span>
                     </div>
-                    <p>Verifying authentication status...</p>
+                    <h2 className="auth-title">Loading...</h2>
+                    <p className="auth-subtitle">Verifying authentication status</p>
                     <div className="loading-spinner"></div>
-                    <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '20px' }}>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--login-text-light)', marginTop: '15px' }}>
                         Checking Firebase and Backend synchronization...
                     </p>
                 </div>
@@ -85,112 +86,150 @@ const Login = () => {
 
     return (
         <div className="auth-page-wrapper">
+            {/* Animated Background */}
             <div className="auth-background">
                 <div className="shape shape-1"></div>
                 <div className="shape shape-2"></div>
                 <div className="shape shape-3"></div>
             </div>
 
+            {/* Main Login Card */}
             <div className="auth-card">
+                {/* Header Section */}
                 <div className="auth-header">
                     <div className="logo-container">
                         <span className="logo-text">G-NETWORK</span>
                     </div>
-                    <h2 className="auth-title">
+                    <h1 className="auth-title">
                         {isSignUp ? 'Create Account' : 'Welcome Back'}
-                    </h2>
+                    </h1>
                     <p className="auth-subtitle">
                         {isSignUp 
-                            ? 'Join the professional developer community' 
-                            : 'Enter your credentials to access your account'}
+                            ? 'Join our professional developer community today' 
+                            : 'Sign in to access your account and continue'}
                     </p>
                 </div>
 
-                {error && <div className="auth-error-message">{error}</div>}
+                {/* Error Message */}
+                {error && (
+                    <div className="auth-error-message">
+                        {error}
+                    </div>
+                )}
 
+                {/* Main Form */}
                 <form onSubmit={handleSubmit} className="auth-form">
+                    {/* Name Field (Sign Up Only) */}
                     {isSignUp && (
                         <div className="form-group">
-                            <label>Full Name</label>
+                            <label htmlFor="name">Full Name</label>
                             <input
+                                id="name"
                                 type="text"
                                 className="form-input"
-                                placeholder="John Doe"
+                                placeholder="Enter your full name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
+                                autoComplete="name"
                             />
                         </div>
                     )}
 
+                    {/* Email Field */}
                     <div className="form-group">
-                        <label>Email Address</label>
+                        <label htmlFor="email">Email Address</label>
                         <input
+                            id="email"
                             type="email"
                             className="form-input"
-                            placeholder="name@company.com"
+                            placeholder="Enter your email address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
+                            autoComplete="email"
                         />
                     </div>
 
+                    {/* Password Field */}
                     <div className="form-group">
                         <div className="label-row">
-                            <label>Password</label>
-                            {!isSignUp && <a href="#" className="forgot-password">Forgot password?</a>}
+                            <label htmlFor="password">Password</label>
+                            {!isSignUp && (
+                                <a href="#" className="forgot-password" onClick={(e) => e.preventDefault()}>
+                                    Forgot password?
+                                </a>
+                            )}
                         </div>
                         <input
+                            id="password"
                             type="password"
                             className="form-input"
-                            placeholder="••••••••"
+                            placeholder="Enter your password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            autoComplete={isSignUp ? "new-password" : "current-password"}
                         />
                     </div>
 
+                    {/* Submit Button */}
                     <button type="submit" className="submit-btn" disabled={loading}>
                         {loading ? (
-                            <span className="spinner-small"></span>
+                            <div className="spinner-small"></div>
                         ) : (
-                            isSignUp ? 'Get Started' : 'Sign In'
+                            isSignUp ? 'Create Account' : 'Sign In'
                         )}
                     </button>
-
-                    <div className="divider">
-                        <span>or continue with</span>
-                    </div>
-
-                    <div className="social-actions">
-                        <button 
-                            type="button" 
-                            onClick={handleGoogleLogin} 
-                            className="social-btn"
-                            disabled={loading}
-                        >
-                            <img src="/images/Google_Favicon_2025.svg.webp" alt="Google" />
-                            {loading ? 'Connecting...' : 'Google'}
-                        </button>
-                        <button type="button" className="social-btn">
-                            <img src="/images/github.png" alt="GitHub" />
-                            GitHub
-                        </button>
-                    </div>
                 </form>
 
+                {/* Divider */}
+                <div className="divider">
+                    <span>or continue with</span>
+                </div>
+
+                {/* Social Login Buttons */}
+                <div className="social-actions">
+                    <button 
+                        type="button" 
+                        onClick={handleGoogleLogin} 
+                        className="social-btn"
+                        disabled={loading}
+                    >
+                        <img src="/images/Google_Favicon_2025.svg.webp" alt="Google" />
+                        Google
+                    </button>
+                    <button 
+                        type="button" 
+                        className="social-btn"
+                        disabled={loading}
+                        onClick={() => setError('GitHub login coming soon!')}
+                    >
+                        <img src="/images/github.png" alt="GitHub" />
+                        GitHub
+                    </button>
+                </div>
+
+                {/* Footer */}
                 <div className="auth-footer">
                     <p>
                         {isSignUp ? 'Already have an account?' : "Don't have an account?"}
                         <button 
                             type="button" 
-                            onClick={() => setIsSignUp(!isSignUp)} 
+                            onClick={() => {
+                                setIsSignUp(!isSignUp);
+                                setError('');
+                                setEmail('');
+                                setPassword('');
+                                setName('');
+                            }} 
                             className="toggle-auth-btn"
+                            disabled={loading}
                         >
-                            {isSignUp ? 'Sign in' : 'Sign up'}
+                            {isSignUp ? 'Sign In' : 'Sign Up'}
                         </button>
                     </p>
-                    <a href="/" className="back-link">Back to Home</a>
+                    <a href="/" className="back-link">← Back to Home</a>
                 </div>
             </div>
         </div>
