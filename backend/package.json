@@ -8,7 +8,8 @@
         "dev": "nodemon server.js",
         "full": "node server.js",
         "minimal": "node server-minimal.js",
-        "health-check": "node health-check.js"
+        "health-check": "node health-check.js",
+        "test-backend": "node test-backend.js"
     },
     "dependencies": {
         "@google/generative-ai": "^0.24.1",
