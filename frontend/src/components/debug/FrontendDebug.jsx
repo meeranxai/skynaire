@@ -10,24 +10,28 @@ const FrontendDebug = () => {
             const info = {
                 timestamp: new Date().toISOString(),
                 apiBaseUrl: API_BASE_URL,
-                environment: import.meta.env.MODE,
-                viteApiUrl: import.meta.env.VITE_API_URL,
+                environment: import.meta.env?.MODE || 'unknown',
+                viteApiUrl: import.meta.env?.VITE_API_URL || 'not set',
                 cssVariables: {},
                 backendStatus: 'checking'
             };
 
-            // Check CSS variables
-            const root = document.documentElement;
-            const computedStyle = getComputedStyle(root);
-            info.cssVariables = {
-                primary: computedStyle.getPropertyValue('--primary'),
-                textPrimary: computedStyle.getPropertyValue('--text-primary'),
-                backgroundPrimary: computedStyle.getPropertyValue('--background-primary'),
-                primary600: computedStyle.getPropertyValue('--primary-600'),
-                backgroundElevated: computedStyle.getPropertyValue('--background-elevated')
-            };
+            // Check CSS variables safely
+            try {
+                const root = document.documentElement;
+                const computedStyle = getComputedStyle(root);
+                info.cssVariables = {
+                    primary: computedStyle.getPropertyValue('--primary') || 'undefined',
+                    textPrimary: computedStyle.getPropertyValue('--text-primary') || 'undefined',
+                    backgroundPrimary: computedStyle.getPropertyValue('--background-primary') || 'undefined',
+                    primary600: computedStyle.getPropertyValue('--primary-600') || 'undefined',
+                    backgroundElevated: computedStyle.getPropertyValue('--background-elevated') || 'undefined'
+                };
+            } catch (err) {
+                info.cssVariables = { error: 'Failed to read CSS variables' };
+            }
 
-            // Check backend
+            // Check backend safely
             try {
                 const response = await fetch(`${API_BASE_URL}/health`);
                 if (response.ok) {
@@ -52,7 +56,7 @@ const FrontendDebug = () => {
         const handleKeyDown = (e) => {
             if (e.ctrlKey && e.shiftKey && e.key === 'D') {
                 e.preventDefault();
-                setIsVisible(!isVisible);
+                setIsVisible(prev => !prev);
             }
         };
 
@@ -128,7 +132,7 @@ const FrontendDebug = () => {
                 )}
                 {debugInfo.backendHealth && (
                     <div style={{ fontSize: '10px', marginTop: '4px' }}>
-                        Services: {JSON.stringify(debugInfo.backendHealth.services)}
+                        Services: {JSON.stringify(debugInfo.backendHealth.services || {})}
                     </div>
                 )}
             </div>
@@ -137,7 +141,7 @@ const FrontendDebug = () => {
                 <strong>CSS Variables:</strong>
                 {Object.entries(debugInfo.cssVariables || {}).map(([key, value]) => (
                     <div key={key} style={{ 
-                        color: value ? 'green' : 'red',
+                        color: value && value !== 'undefined' ? 'green' : 'red',
                         fontSize: '10px'
                     }}>
                         --{key}: {value || 'undefined'}

@@ -36,9 +36,7 @@ const ProtectedRoute = ({ children }) => {
             {children}
             <FrontendDebug />
         </>
-    );    }
-
-    return children;
+    );
 };
 
 import { NavigationProvider } from './contexts/NavigationContext';
