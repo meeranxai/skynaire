@@ -135,22 +135,22 @@ export const SocketProvider = ({ children }) => {
         newSocket.on('user_presence_changed', (data) => {
             setOnlineUsers(prev => {
                 // Limit online users to prevent memory bloat
-                const newUsers = { ...prev };
-                if (Object.keys(newUsers).length > 100) {
+                let updatedUsers = { ...prev };
+                if (Object.keys(updatedUsers).length > 100) {
                     // Keep only last 50 users
-                    const entries = Object.entries(newUsers);
+                    const entries = Object.entries(updatedUsers);
                     const limited = Object.fromEntries(entries.slice(-50));
-                    newUsers = limited;
+                    updatedUsers = limited;
                 }
                 
-                newUsers[data.firebaseUid] = {
+                updatedUsers[data.firebaseUid] = {
                     isOnline: data.isOnline,
                     isActive: data.isActive,
                     lastSeen: data.lastSeen,
                     displayName: data.displayName,
                     photoURL: data.photoURL
                 };
-                return newUsers;
+                return updatedUsers;
             });
         });
 
