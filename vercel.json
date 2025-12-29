@@ -15,11 +15,6 @@
       "VITE_API_URL": "https://g-networkc-production.up.railway.app"
     }
   },
-  "functions": {
-    "frontend/dist/**": {
-      "maxDuration": 30
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",
