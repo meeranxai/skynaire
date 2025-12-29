@@ -1,9 +1,5 @@
 {
   "framework": "vite",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install",
-  "rootDirectory": "frontend",
   "env": {
     "NODE_ENV": "production",
     "VITE_API_URL": "https://g-networkc-production.up.railway.app",
