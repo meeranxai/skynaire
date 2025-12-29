@@ -1,7 +1,6 @@
 {
   "version": 2,
   "name": "g-network",
-  "// comment": "Trigger deployment with working @vercel/static-build config",
   "builds": [
     {
       "src": "frontend/package.json",
