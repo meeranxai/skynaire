@@ -11,6 +11,12 @@ body, html, #root {
     color: var(--text-primary) !important;
 }
 
+/* AGGRESSIVE DARK MODE OVERRIDE - Force light theme everywhere */
+body, body *, html, html *, #root, #root * {
+    background-color: inherit !important;
+    color: inherit !important;
+}
+
 /* Override any dark classes */
 [class*="dark"], 
 [class*="Dark"],
@@ -18,6 +24,50 @@ body, html, #root {
 [class*="Black"] {
     background-color: var(--surface-0) !important;
     color: var(--text-primary) !important;
+}
+
+/* CRITICAL: Override hardcoded dark backgrounds */
+[style*="background: rgba(0"], 
+[style*="background-color: rgba(0"],
+[style*="background: rgb(0"],
+[style*="background-color: rgb(0"],
+[style*="background:#000"],
+[style*="background: #000"],
+[style*="background-color:#000"],
+[style*="background-color: #000"] {
+    background-color: var(--surface-0) !important;
+}
+
+/* Override dark mode media query */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-primary: #ffffff !important;
+        --background-secondary: #fafafa !important;
+        --background-tertiary: #f4f4f5 !important;
+        --background-elevated: #ffffff !important;
+        --text-primary: #111827 !important;
+        --text-secondary: #6b7280 !important;
+        --text-tertiary: #9ca3af !important;
+        --surface-0: #ffffff !important;
+        --surface-100: #f9fafb !important;
+        --border-light: #f3f4f6 !important;
+        --border-default: #e5e7eb !important;
+    }
+}
+
+/* Override dark mode class */
+.dark-mode {
+    --background-primary: #ffffff !important;
+    --background-secondary: #fafafa !important;
+    --background-tertiary: #f4f4f5 !important;
+    --background-elevated: #ffffff !important;
+    --text-primary: #111827 !important;
+    --text-secondary: #6b7280 !important;
+    --text-tertiary: #9ca3af !important;
+    --surface-0: #ffffff !important;
+    --surface-100: #f9fafb !important;
+    --border-light: #f3f4f6 !important;
+    --border-default: #e5e7eb !important;
 }
 
 /* Common layout elements */
@@ -152,5 +202,77 @@ div[style*="background-color:#"] {
 
 /* Fix any black text on dark backgrounds */
 [style*="color: rgb(0"] {
+    color: var(--text-primary) !important;
+}
+
+/* SPECIFIC FIXES FOR KNOWN DARK AREAS */
+
+/* Fix Reels page black background */
+.reels-container, 
+[style*="backgroundColor: '#000'"],
+[style*="background: '#000'"] {
+    background-color: var(--background-primary) !important;
+}
+
+/* Fix modal overlays */
+.modal-overlay,
+[style*="background: rgba(0,0,0"] {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Fix glass morphism dark backgrounds */
+.glass-blur,
+.glass-panel,
+[style*="backdrop-filter"],
+[style*="backdropFilter"] {
+    background-color: var(--surface-0) !important;
+    border: 1px solid var(--border-light) !important;
+}
+
+/* Fix any remaining black areas */
+* {
+    background-color: inherit;
+}
+
+/* Force all text to be visible */
+body * {
+    color: inherit;
+}
+
+/* Ensure proper contrast */
+.social-app {
+    background-color: var(--background-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Fix specific components that might be dark */
+.trending-box,
+.create-composer,
+.social-card,
+.feed-container,
+.app-layout {
+    background-color: var(--surface-0) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Override any CSS variables that might cause dark areas */
+:root {
+    --dark-surface: #ffffff !important;
+    --dark-card: #ffffff !important;
+    --dark-border: #e5e7eb !important;
+    --dark-hover: #f3f4f6 !important;
+    --glass-bg: rgba(255, 255, 255, 0.9) !important;
+    --glass-border: rgba(255, 255, 255, 0.2) !important;
+    --glass-blur: 10px !important;
+}
+
+/* Final catch-all for any missed dark elements */
+[class*="bg-black"],
+[class*="bg-dark"],
+[class*="background-dark"],
+.bg-gray-900,
+.bg-slate-900,
+.bg-zinc-900 {
+    background-color: var(--surface-0) !important;
     color: var(--text-primary) !important;
 }

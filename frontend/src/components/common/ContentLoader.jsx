@@ -15,9 +15,10 @@ const ContentLoader = ({
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: '40px',
-                background: 'var(--surface-0)',
+                background: 'var(--background-elevated)',
                 borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--border-light)'
+                border: '1px solid var(--border-light)',
+                color: 'var(--text-primary)'
             }}>
                 <div style={{
                     width: '40px',
@@ -45,10 +46,11 @@ const ContentLoader = ({
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: '40px',
-                background: 'var(--surface-0)',
+                background: 'var(--background-elevated)',
                 borderRadius: 'var(--radius-lg)',
                 border: '1px solid var(--border-light)',
-                textAlign: 'center'
+                textAlign: 'center',
+                color: 'var(--text-primary)'
             }}>
                 <div style={{
                     fontSize: '48px',
@@ -81,10 +83,11 @@ const ContentLoader = ({
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: '40px',
-                background: 'var(--surface-0)',
+                background: 'var(--background-elevated)',
                 borderRadius: 'var(--radius-lg)',
                 border: '1px solid var(--border-light)',
-                textAlign: 'center'
+                textAlign: 'center',
+                color: 'var(--text-primary)'
             }}>
                 <div style={{
                     fontSize: '48px',
