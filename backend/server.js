@@ -98,12 +98,21 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ================================
 // SOCKET.IO SETUP
 // ================================
+const { verifySocketJWT } = require('./middleware/auth');
+
 const io = new Server(server, {
     cors: corsOptions,
     pingTimeout: 60000,
     pingInterval: 25000
 });
+
+// JWT Authentication middleware for Socket.IO
+io.use(verifySocketJWT);
+
 app.set('socketio', io);
+
+// Online users tracking
+const onlineUsers = new Map(); // userId -> { socketId, user }
 
 // ================================
 // DATABASE CONNECTION
@@ -149,6 +158,7 @@ app.get('/test', (req, res) => {
 // ================================
 // API ROUTES
 // ================================
+app.use('/api/auth', require('./routes/auth')); // JWT Authentication routes
 app.use('/api/posts', require('./routes/posts'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/chat', require('./routes/chat'));
@@ -164,56 +174,104 @@ app.use('/api/reels', require('./routes/reels'));
 // ================================
 // SOCKET.IO LOGIC
 // ================================
-io.on('connection', (socket) => {
-    console.log('User Connected:', socket.id);
+io.on('connection', async (socket) => {
+    console.log(`User Connected: ${socket.user.displayName} (${socket.firebaseUid})`);
 
-    // User comes online
-    socket.on('user_online', async (userData) => {
-        try {
-            const { firebaseUid, displayName, email, photoURL } = userData;
-
-            let user = await User.findOne({ firebaseUid });
-            if (!user) {
-                console.log(`User ${firebaseUid} not found in DB yet, skipping presence update...`);
-                return;
-            }
-
+    try {
+        // Update user online status
+        const user = await User.findOne({ firebaseUid: socket.firebaseUid });
+        if (user) {
             user.isOnline = true;
+            user.lastSeen = new Date();
             if (!user.socketIds) user.socketIds = [];
             if (!user.socketIds.includes(socket.id)) {
                 user.socketIds.push(socket.id);
             }
-            user.lastSeen = new Date();
             await user.save();
 
-            socket.join(firebaseUid);
+            // Add to online users map
+            onlineUsers.set(socket.firebaseUid, {
+                socketId: socket.id,
+                user: {
+                    uid: user.firebaseUid,
+                    displayName: user.displayName,
+                    username: user.username,
+                    photoURL: user.profile?.photoURL || user.photoURL
+                }
+            });
 
-            io.emit('user_presence_changed', {
-                firebaseUid,
-                displayName,
-                photoURL,
+            // Join user's personal room
+            socket.join(socket.firebaseUid);
+
+            // Broadcast user online status
+            socket.broadcast.emit('user_online', {
+                userId: socket.firebaseUid,
+                displayName: user.displayName,
+                username: user.username,
+                photoURL: user.profile?.photoURL || user.photoURL,
                 isOnline: true
             });
 
-            console.log(`User ${displayName} (${firebaseUid}) is online`);
-        } catch (err) {
-            console.error('Error in user_online:', err);
+            // Send current online users to the newly connected user
+            const onlineUsersList = Array.from(onlineUsers.values()).map(ou => ou.user);
+            socket.emit('online_users_list', onlineUsersList);
+
+            console.log(`User ${user.displayName} is now online`);
+        }
+    } catch (error) {
+        console.error('Error in user connection:', error);
+    }
+
+    // Real-time post events
+    socket.on('new_post', async (postData) => {
+        try {
+            console.log('New post event:', postData);
+            
+            // Broadcast to all connected users except sender
+            socket.broadcast.emit('new_post', {
+                ...postData,
+                authorId: socket.firebaseUid,
+                authorName: socket.user.displayName,
+                timestamp: new Date()
+            });
+
+            console.log(`Post broadcasted from ${socket.user.displayName}`);
+        } catch (error) {
+            console.error('Error broadcasting new post:', error);
+        }
+    });
+
+    socket.on('like_post', async (data) => {
+        try {
+            const { postId } = data;
+            
+            // Broadcast like update to all users
+            io.emit('post_liked', {
+                postId,
+                userId: socket.firebaseUid,
+                userName: socket.user.displayName,
+                timestamp: new Date()
+            });
+
+            console.log(`Post ${postId} liked by ${socket.user.displayName}`);
+        } catch (error) {
+            console.error('Error broadcasting post like:', error);
         }
     });
 
     // User activity update
     socket.on('user_activity_update', async (data) => {
         try {
-            const user = await User.findOne({ socketIds: socket.id });
+            const user = await User.findOne({ firebaseUid: socket.firebaseUid });
             if (user) {
                 user.isActive = data.isActive;
                 user.lastSeen = new Date();
                 await user.save();
 
-                io.emit('user_presence_changed', {
-                    firebaseUid: user.firebaseUid,
+                socket.broadcast.emit('user_presence_changed', {
+                    userId: socket.firebaseUid,
                     displayName: user.displayName,
-                    photoURL: user.photoURL,
+                    photoURL: user.profile?.photoURL || user.photoURL,
                     isOnline: true,
                     isActive: data.isActive,
                     lastSeen: user.lastSeen
@@ -244,24 +302,23 @@ io.on('connection', (socket) => {
     // Typing Status
     socket.on('typing', async (data) => {
         try {
-            const user = await User.findOne({ firebaseUid: data.senderId });
             socket.to(data.chatId).emit('display_typing', {
                 chatId: data.chatId,
-                senderId: data.senderId,
-                senderName: user ? user.displayName : 'Someone',
+                senderId: socket.firebaseUid,
+                senderName: socket.user.displayName,
                 isTyping: data.isTyping
             });
         } catch (err) {
-            socket.to(data.chatId).emit('display_typing', data);
+            console.error('Error in typing event:', err);
         }
     });
 
     // Join rooms
-    socket.on('join_personal_room', async (uid) => {
-        socket.join(uid);
-        console.log(`User ${uid} joined personal room`);
+    socket.on('join_personal_room', async () => {
+        socket.join(socket.firebaseUid);
+        console.log(`User ${socket.firebaseUid} joined personal room`);
 
-        const chats = await Chat.find({ participants: uid });
+        const chats = await Chat.find({ participants: socket.firebaseUid });
         chats.forEach(chat => {
             socket.join(chat._id.toString());
         });
@@ -281,12 +338,12 @@ io.on('connection', (socket) => {
 
             if (!data.chatId) {
                 chat = await Chat.findOne({
-                    participants: { $all: [data.senderId, data.recipientId] }
+                    participants: { $all: [socket.firebaseUid, data.recipientId] }
                 });
 
                 if (!chat) {
                     chat = new Chat({
-                        participants: [data.senderId, data.recipientId],
+                        participants: [socket.firebaseUid, data.recipientId],
                         lastMessage: data.text
                     });
                     await chat.save();
@@ -299,12 +356,12 @@ io.on('connection', (socket) => {
 
             // Check for blocks
             if (!chat.isGroup) {
-                const recipientId = data.recipientId || chat.participants.find(p => p !== data.senderId);
-                const users = await User.find({ firebaseUid: { $in: [recipientId, data.senderId] } });
+                const recipientId = data.recipientId || chat.participants.find(p => p !== socket.firebaseUid);
+                const users = await User.find({ firebaseUid: { $in: [recipientId, socket.firebaseUid] } });
                 const recipient = users.find(u => u.firebaseUid === recipientId);
-                const sender = users.find(u => u.firebaseUid === data.senderId);
+                const sender = users.find(u => u.firebaseUid === socket.firebaseUid);
 
-                if (recipient && recipient.blockedUsers.includes(data.senderId)) {
+                if (recipient && recipient.blockedUsers.includes(socket.firebaseUid)) {
                     return socket.emit('error', { message: 'You are blocked by this user.' });
                 }
                 if (sender && sender.blockedUsers.includes(recipientId)) {
@@ -314,7 +371,7 @@ io.on('connection', (socket) => {
 
             const newMessage = new Message({
                 chatId: chat._id,
-                senderId: data.senderId,
+                senderId: socket.firebaseUid,
                 text: data.text,
                 mediaUrl: data.mediaUrl,
                 mediaType: data.mediaType || 'text',
@@ -327,10 +384,10 @@ io.on('connection', (socket) => {
 
             chat.lastMessage = data.mediaType && data.mediaType !== 'text' ? `Sent a ${data.mediaType}` : data.text;
             chat.lastMessageTimestamp = new Date();
-            chat.unreadCounts.set(data.senderId, 0);
+            chat.unreadCounts.set(socket.firebaseUid, 0);
 
             chat.participants.forEach(p => {
-                if (p !== data.senderId) {
+                if (p !== socket.firebaseUid) {
                     const current = chat.unreadCounts.get(p) || 0;
                     chat.unreadCounts.set(p, current + 1);
                 }
@@ -341,10 +398,10 @@ io.on('connection', (socket) => {
             io.to(chat._id.toString()).emit('receive_message', newMessage);
 
             chat.participants.forEach(p => {
-                if (p !== data.senderId) {
+                if (p !== socket.firebaseUid) {
                     io.to(p).emit('notification', {
                         type: 'message',
-                        senderName: data.senderId,
+                        senderName: socket.user.displayName,
                         text: data.text || `Sent a ${data.mediaType}`,
                         chatId: chat._id
                     });
@@ -361,11 +418,9 @@ io.on('connection', (socket) => {
             socket.emit('message_sent', { chatId: chat._id, message: newMessage });
 
             if (!chat.isGroup) {
-                const recipientId = data.recipientId || chat.participants.find(p => p !== data.senderId);
+                const recipientId = data.recipientId || chat.participants.find(p => p !== socket.firebaseUid);
                 io.to(recipientId).emit('receive_message_individual', newMessage);
             }
-
-            socket.to(data.senderId).emit('message_sent_sync', { chatId: chat._id, message: newMessage });
 
         } catch (err) {
             console.error("Socket Message Error:", err);
@@ -379,7 +434,7 @@ io.on('connection', (socket) => {
             const result = await Message.updateMany(
                 {
                     chatId: data.chatId,
-                    senderId: { $ne: data.userId },
+                    senderId: { $ne: socket.firebaseUid },
                     read: false
                 },
                 { read: true }
@@ -388,7 +443,7 @@ io.on('connection', (socket) => {
             if (result.modifiedCount > 0) {
                 io.to(data.chatId).emit('messages_read_update', {
                     chatId: data.chatId,
-                    readBy: data.userId
+                    readBy: socket.firebaseUid
                 });
             }
         } catch (err) {
@@ -401,7 +456,7 @@ io.on('connection', (socket) => {
         try {
             const chat = await Chat.findById(data.chatId);
             if (chat && chat.unreadCounts) {
-                chat.unreadCounts.set(data.userId, 0);
+                chat.unreadCounts.set(socket.firebaseUid, 0);
                 await chat.save();
 
                 socket.emit('unread_count_updated', {
@@ -418,25 +473,37 @@ io.on('connection', (socket) => {
     socket.on('join_reel', ({ reelId, user }) => {
         if (!reelId) return;
         socket.join(`reel_${reelId}`);
-        socket.to(`reel_${reelId}`).emit('reel_viewer_joined', user);
+        socket.to(`reel_${reelId}`).emit('reel_viewer_joined', {
+            ...user,
+            userId: socket.firebaseUid
+        });
     });
 
-    socket.on('leave_reel', ({ reelId, userId }) => {
+    socket.on('leave_reel', ({ reelId }) => {
         if (!reelId) return;
         socket.leave(`reel_${reelId}`);
-        socket.to(`reel_${reelId}`).emit('reel_viewer_left', { userId });
+        socket.to(`reel_${reelId}`).emit('reel_viewer_left', { 
+            userId: socket.firebaseUid 
+        });
     });
 
-    socket.on('send_reaction', ({ reelId, reaction, user }) => {
-        socket.to(`reel_${reelId}`).emit('reel_reaction', { reaction, user });
+    socket.on('send_reaction', ({ reelId, reaction }) => {
+        socket.to(`reel_${reelId}`).emit('reel_reaction', { 
+            reaction, 
+            user: {
+                uid: socket.firebaseUid,
+                displayName: socket.user.displayName,
+                photoURL: socket.user.profile?.photoURL || socket.user.photoURL
+            }
+        });
     });
 
     // Disconnect
     socket.on('disconnect', async () => {
-        console.log('User Disconnected:', socket.id);
+        console.log(`User Disconnected: ${socket.user.displayName} (${socket.id})`);
 
         try {
-            const user = await User.findOne({ socketIds: socket.id });
+            const user = await User.findOne({ firebaseUid: socket.firebaseUid });
             if (user) {
                 user.socketIds = user.socketIds.filter(id => id !== socket.id);
 
@@ -444,12 +511,17 @@ io.on('connection', (socket) => {
                     user.isOnline = false;
                     user.lastSeen = new Date();
 
-                    io.emit('user_presence_changed', {
-                        firebaseUid: user.firebaseUid,
+                    // Remove from online users map
+                    onlineUsers.delete(socket.firebaseUid);
+
+                    // Broadcast user offline status
+                    socket.broadcast.emit('user_offline', {
+                        userId: socket.firebaseUid,
                         displayName: user.displayName,
-                        photoURL: user.photoURL,
-                        isOnline: false
+                        isOnline: false,
+                        lastSeen: user.lastSeen
                     });
+
                     console.log(`User ${user.displayName} went offline`);
                 }
 

@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
     // Core Identity
-    firebaseUid: { type: String, required: true, unique: true, index: true },
+    firebaseUid: { type: String, unique: true, sparse: true, index: true }, // Made optional for JWT auth
+    password: { type: String, select: false }, // For JWT authentication
     displayName: { type: String, required: true, minlength: 1, maxlength: 50 },
     username: { type: String, required: true, unique: true, lowercase: true, trim: true, minlength: 3, maxlength: 30, match: /^[a-z0-9_]+$/, index: true },
-    email: { type: String, required: true, lowercase: true, index: true },
+    email: { type: String, required: true, unique: true, lowercase: true, index: true },
 
     // A. PROFILE & IDENTITY SETTINGS
     profile: {
